@@ -1,0 +1,36 @@
+{
+    "name": "progen-extension",
+    "version": "0.0.1",
+    "activationEvents": [
+        "*"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "command": "progen.run",
+                "title": "run"
+            },
+            {
+                "command": "progen.run",
+                "title": "export"
+            }
+        ],       
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "progen-view",
+                    "title": "progen",
+                    "icon": "./logo.png"
+                }
+            ]
+        },
+        "views": {
+            "progen": [
+                {
+                    "id": "progen",
+                    "name": "progen"
+                }
+            ]
+        }
+    }
+}
