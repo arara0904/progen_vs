@@ -11,7 +11,7 @@
                 "title": "run"
             },
             {
-                "command": "progen.run",
+                "command": "progen.export",
                 "title": "export"
             }
         ],       

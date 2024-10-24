@@ -42,7 +42,7 @@ class TreeDataProvider {
 }
 
 function activate(context) {
-    context.subscriptions.push(vscode.commands.registerCommand('progen.run', run);
+    context.subscriptions.push(vscode.commands.registerCommand('progen.run', run));
     vscode.window.registerTreeDataProvider('progen', new TreeDataProvider());
 }
 
