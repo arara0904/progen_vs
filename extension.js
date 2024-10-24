@@ -7,22 +7,22 @@ function run() {
 const treeData =
     [
         {
-	    label: "run",
-	    collapsibleState: vscode.TreeItemCollapsibleState.None,
-	    command:{
-		command: "progen.run",
-		title: "run",
-		arguments: []
-	    }
-	},
-	{
-	    label: "export",
-	    collapsibleState: vscode.TreeItemCollapsibleState.None,
-	    command:{
-		command: "progen.export",
-		title: "export",
-		arguments: []
-	    }
+            label: "run",
+            collapsibleState: vscode.TreeItemCollapsibleState.None,
+            command:{
+                command: "progen.run",
+                title: "run",
+                arguments: []
+            }
+        },
+        {
+            label: "export",
+            collapsibleState: vscode.TreeItemCollapsibleState.None,
+            command:{
+                command: "progen.export",
+                title: "export",
+                arguments: []
+            }
         }
  
     ];
