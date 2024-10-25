@@ -1,6 +1,10 @@
 {
     "name": "progen-extension",
     "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.33.1"
+    },
+    "main": "./extension.js",
     "activationEvents": [
         "*"
     ],
@@ -8,13 +12,13 @@
         "commands": [
             {
                 "command": "progen.run",
-                "title": "run"
+                "title": "Progen: export"
             },
             {
                 "command": "progen.export",
-                "title": "export"
+                "title": "Progen: export"
             }
-        ],       
+        ],
         "viewsContainers": {
             "activitybar": [
                 {
