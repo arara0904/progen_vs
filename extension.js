@@ -8,7 +8,8 @@ function run(textEditor) {
     const filePath = textEditor.document.fileName;
     const terminal = vscode.window.createTerminal(`Progen`,`C:\\WINDOWS\\system32\\cmd.exe`,`/k "${vcvarsPath}"`);
     terminal.show();
-    terminal.sendText(`cl /EHsc "${filePath}"`);
+    terminal.sendText(`chcp 65001`);
+    terminal.sendText(`cl.exe /EHsc "${filePath}"`);
 }
 
 const searchFile = (dir, fileName, callback) => {
