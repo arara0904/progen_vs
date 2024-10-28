@@ -17,9 +17,9 @@ function run(textEditor) {
 function file_export(textEditor) {
 
     const document = textEditor.document;
-    const content = document.getText()+`\n\n/***実行結果\n\n`;
-    const exportPath = path.join(vscode.workspace.rootPath, 'export', path.basename(document.fileName));
     const filePath = document.fileName;
+    const content = `/*** ${path.parse(filePath).name} ***/\n/*** ps00 ***/\n\n${document.getText()}\n\n/***実行結果\n\n`;
+    const exportPath = path.join(vscode.workspace.rootPath, 'export', path.basename(document.fileName));
     const dir = `${path.parse(filePath).dir}/export`;
 
     const bom = Buffer.from([0xEF, 0xBB, 0xBF]);
@@ -42,7 +42,7 @@ function file_export(textEditor) {
         terminal.show();
         terminal.sendText(`chcp 65001`);
         terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}/${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}/${path.parse(filePath).name}"`);
-        terminal.sendText(`( "${path.parse(filePath).dir}/${path.parse(filePath).name}.exe" && echo; && echo ***/ ) >> "${path.parse(filePath).dir}/export/${path.parse(filePath).base}"`);
+        terminal.sendText(`("${path.parse(filePath).dir}/${path.parse(filePath).name}.exe" && echo; && echo ***/) >> "${path.parse(filePath).dir}/export/${path.parse(filePath).base}"`);
     });
 }
 
