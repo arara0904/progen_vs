@@ -18,7 +18,7 @@ function file_export(textEditor) {
 
     const document = textEditor.document;
     const filePath = document.fileName;
-    const content = `/*** ${path.parse(filePath).name} ***/\n/*** ps00 ***/\n\n${document.getText()}\n\n/***実行結果\n\n`;
+    const content = `/*** ${path.parse(filePath).base} ***/\n/*** ps00 ***/\n\n${document.getText()}\n\n/***実行結果\n\n`;
     const exportPath = path.join(vscode.workspace.rootPath, 'export', path.basename(document.fileName));
     const dir = `${path.parse(filePath).dir}/export`;
 
