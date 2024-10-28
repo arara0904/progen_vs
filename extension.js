@@ -42,7 +42,7 @@ function file_export(textEditor) {
         terminal.show();
         terminal.sendText(`chcp 65001`);
         terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}/${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}/${path.parse(filePath).name}"`);
-        terminal.sendText(`("${path.parse(filePath).dir}/${path.parse(filePath).name}.exe" && echo; && echo ***/) >> "${path.parse(filePath).dir}/export/${path.parse(filePath).base}"`);
+        terminal.sendText(`("${path.parse(filePath).dir}/${path.parse(filePath).name}.exe" &&echo;&&echo;&&echo ***/) >> "${path.parse(filePath).dir}/export/${path.parse(filePath).base}"`);
     });
 }
 
