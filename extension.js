@@ -9,7 +9,7 @@ function run(textEditor) {
     const terminal = vscode.window.createTerminal(`Progen`,`C:\\WINDOWS\\system32\\cmd.exe`,`/k "${vcvarsPath}"`);
     terminal.show();
     terminal.sendText(`chcp 65001`);
-    terminal.sendText(`cl.exe /EHsc "${filePath}"`);
+    terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}/${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}/${path.parse(filePath).name}"`);
 }
 
 const searchFile = (dir, fileName, callback) => {
@@ -73,11 +73,7 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.export', run));
     vscode.window.registerTreeDataProvider('progen', new TreeDataProvider());
     
-    searchFile(`C:\\Program Files (x86)\\Microsoft Visual Studio`,`vcvars32.bat`,(path)=>{
-        vcvarsPath = path;
-        vscode.window.showInformationMessage(path);
-    });
-    searchFile(`C:\\Program Files\\Microsoft Visual Studio`,`vcvars32.bat`,(path)=>{
+    searchFile(`C:\\Program Files (x86)\\Microsoft Visual Studio 14.0`,`vcvars32.bat`,(path)=>{
         vcvarsPath = path;
         vscode.window.showInformationMessage(path);
     });
