@@ -9,3 +9,5 @@ Windowsにのみ対応。Visual Studio(vcvars.bat,cl.exe)が入ってる環境�
 ユーザー名、ファイル名が先頭に追加され、実行結果が下に追加されます。exportディレクトリにBOM付きのUTF-8でエンコードされます。
 ### config
 設定画面に飛べます。export用のユーザー名を設定できます。
+## リリース
+[リリース](https://github.com/arara0904/progen_vs/blob/main/README.md)
