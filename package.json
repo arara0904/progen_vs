@@ -12,11 +12,15 @@
         "commands": [
             {
                 "command": "progen.run",
-                "title": "Progen: export"
+                "title": "Progen: run"
             },
             {
                 "command": "progen.export",
                 "title": "Progen: export"
+            },
+            {
+                "command": "progen.config",
+                "title": "Progen: config"
             }
         ],
         "viewsContainers": {
@@ -35,6 +39,17 @@
                     "name": "progen"
                 }
             ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Extension Configuration",
+            "properties": {
+                "progen.username": {
+                    "type": "string",
+                    "default": "ps00",
+                    "description": "ユーザー名"
+                }
+            }
         }
     }
 }

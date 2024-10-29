@@ -2,6 +2,9 @@ const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
 
+const config = vscode.workspace.getConfiguration('progen');
+const username = config.get('username');
+
 let vcvarsPath;
 
 function run(textEditor) {
@@ -10,7 +13,7 @@ function run(textEditor) {
     const terminal = vscode.window.createTerminal(`Progen`,`C:\\WINDOWS\\system32\\cmd.exe`,`/k "${vcvarsPath}"`);
     terminal.show();
     terminal.sendText(`chcp 65001`);
-    terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}\\${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}\\${path.parse(filePath).name}"`);
+    terminal.sendText(`cl.exe /source-charset:utf-8 /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}\\${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}\\${path.parse(filePath).name}"`);
     terminal.sendText(`"${path.parse(filePath).dir}/${path.parse(filePath).name}.exe"`);
 }
 
@@ -18,7 +21,7 @@ function file_export(textEditor) {
 
     const document = textEditor.document;
     const filePath = document.fileName;
-    const content = `/*** ${path.parse(filePath).base} ***/\n/*** ps00 ***/\n\n${document.getText()}\n\n/***実行結果\n\n`;
+    const content = `/*** ${path.parse(filePath).base} ***/\n/*** ${username} ***/\n\n${document.getText()}\n\n/***実行結果\n\n`;
     const exportPath = path.join(vscode.workspace.rootPath, 'export', path.basename(document.fileName));
     const dir = `${path.parse(filePath).dir}/export`;
 
@@ -26,31 +29,31 @@ function file_export(textEditor) {
     const buffer = Buffer.concat([bom, Buffer.from(content, 'utf8')]);
 
     fs.mkdir(dir, { recursive: true }, (err) => {
+        if (err) {
+            vscode.window.showErrorMessage(err.message);
+        }
         fs.writeFileSync(exportPath, buffer, (err) => {
             if (err) {
-                vscode.window.showErrorMessage('ファイルの保存に失敗しました: ' + err.message);
-            } else {
-                vscode.window.showInformationMessage('ファイルが保存されました: ' + exportPath);
+                vscode.window.showErrorMessage(err.message);
             }
         });
-
-        if (err) {
-            return console.error(err);
-        }
 
         const terminal = vscode.window.createTerminal(`Progen`,`C:\\WINDOWS\\system32\\cmd.exe`,`/k "${vcvarsPath}"`);
         terminal.show();
         terminal.sendText(`chcp 65001`);
-        terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}\\${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}\\${path.parse(filePath).name}"`);
-        terminal.sendText(`("${path.parse(filePath).dir}/${path.parse(filePath).name}.exe" &&echo;&&echo;&&echo ***/) >> "${path.parse(filePath).dir}/export/${path.parse(filePath).base}"`);
+        terminal.sendText(`cl.exe /source-charset:utf-8 /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}\\${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}\\${path.parse(filePath).name}"`);
+        terminal.sendText(`("${path.parse(filePath).dir}/${path.parse(filePath).name}.exe"||echo error&&echo;&&echo;&&echo ***/) >> "${path.parse(filePath).dir}/export/${path.parse(filePath).base}"`);
     });
+}
+
+const moveToConfig = ()=>{
+    vscode.commands.executeCommand('workbench.action.openSettings', `progen`);
 }
 
 const searchFile = (dir, fileName, callback) => {
     fs.readdir(dir, { withFileTypes: true }, (err, files) => {
         if (err) {
-            console.error(err);
-            return;
+            vscode.window.showErrorMessage(err.message);
         }
 
         for (const file of files) {
@@ -103,6 +106,15 @@ const treeData =
                 title: "export",
                 arguments: []
             }
+        },
+        {
+            label: "config",
+            collapsibleState: vscode.TreeItemCollapsibleState.None,
+            command:{
+                command: "progen.config",
+                title: "config",
+                arguments: []
+            }
         }
     ];
 
@@ -121,16 +133,16 @@ class TreeDataProvider {
 }
 
 function activate(context) {
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.run', run));
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.export', file_export));
-    vscode.window.registerTreeDataProvider('progen', new TreeDataProvider());
-
     searchMSVC((MSVCpath)=>{
         searchFile(MSVCpath,`vcvars32.bat`,(path)=>{
             vcvarsPath = path;
-            vscode.window.showInformationMessage(path);
         });
     });
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.run', run));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.export', file_export));
+    context.subscriptions.push(vscode.commands.registerCommand('progen.config', moveToConfig));
+
+    vscode.window.registerTreeDataProvider('progen', new TreeDataProvider());
 }
 
 function deactivate() {
