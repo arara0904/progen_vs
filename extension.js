@@ -10,7 +10,7 @@ function run(textEditor) {
     const terminal = vscode.window.createTerminal(`Progen`,`C:\\WINDOWS\\system32\\cmd.exe`,`/k "${vcvarsPath}"`);
     terminal.show();
     terminal.sendText(`chcp 65001`);
-    terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}/${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}/${path.parse(filePath).name}"`);
+    terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}\\${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}\\${path.parse(filePath).name}"`);
     terminal.sendText(`"${path.parse(filePath).dir}/${path.parse(filePath).name}.exe"`);
 }
 
@@ -41,7 +41,7 @@ function file_export(textEditor) {
         const terminal = vscode.window.createTerminal(`Progen`,`C:\\WINDOWS\\system32\\cmd.exe`,`/k "${vcvarsPath}"`);
         terminal.show();
         terminal.sendText(`chcp 65001`);
-        terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}/${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}/${path.parse(filePath).name}"`);
+        terminal.sendText(`cl.exe /EHsc "${filePath}" /Fo"${path.parse(filePath).dir}\\${path.parse(filePath).name}" /Fe"${path.parse(filePath).dir}\\${path.parse(filePath).name}"`);
         terminal.sendText(`("${path.parse(filePath).dir}/${path.parse(filePath).name}.exe" &&echo;&&echo;&&echo ***/) >> "${path.parse(filePath).dir}/export/${path.parse(filePath).base}"`);
     });
 }
@@ -64,6 +64,24 @@ const searchFile = (dir, fileName, callback) => {
         }
     });
 };
+
+const searchMSVC = (callback)=>{
+    const PFsPaths = [`C:\\Program Files`,`C:\\Program Files (x86)`]
+
+    for(let i=0;i<2;i++){
+        fs.readdir(PFsPaths[i], { withFileTypes: true }, (err, files) => {
+            if (err) {
+                vscode.window.showInformationMessage(err.message);
+            }
+            for (const file of files) {
+                const fullPath = path.join(PFsPaths[i], file.name);
+                if (file.isDirectory() && file.name.match(/^Microsoft Visual Studio/)) {
+                    callback(fullPath);
+                }
+            }
+        });
+    }
+}
 
 
 const treeData =
@@ -107,11 +125,11 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.export', file_export));
     vscode.window.registerTreeDataProvider('progen', new TreeDataProvider());
 
-    //まず初めに正規表現でc:/programfilesとc:/programfiles(x86)の中にあるmicrosoftvisualstudioが含まれるディレクトリを探すようにする(ex:Microsoft Visual Studio 14.0)
-    
-    searchFile(`C:\\Program Files (x86)`,`vcvars32.bat`,(path)=>{
-        vcvarsPath = path;
-        vscode.window.showInformationMessage(path);
+    searchMSVC((MSVCpath)=>{
+        searchFile(MSVCpath,`vcvars32.bat`,(path)=>{
+            vcvarsPath = path;
+            vscode.window.showInformationMessage(path);
+        });
     });
 }
 
