@@ -27,6 +27,10 @@
                 "title": "Progen: export"
             },
             {
+                "command": "progen.exportOnly",
+                "title": "Progen: export only"
+            },
+            {
                 "command": "progen.config",
                 "title": "Progen: config"
             }

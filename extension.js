@@ -37,6 +37,17 @@ function file_export(textEditor) {
     terminal.sendText(`./compile.ps1 export "${filePath}" "${username}"`);
 }
 
+function file_export_only(textEditor) {
+    const document = textEditor.document
+    const filePath = document.fileName;
+    const config = vscode.workspace.getConfiguration('progen');
+    const username = config.get('username');
+
+    const terminal = vscode.window.createTerminal(`Progen`,`powershell`);
+    terminal.show();
+    terminal.sendText(`./compile.ps1 exportonly "${filePath}" "${username}"`);
+}
+
 const moveToConfig = ()=>{
     vscode.commands.executeCommand('workbench.action.openSettings', `progen`);
 }
@@ -140,6 +151,15 @@ const treeData =
             }
         },
         {
+            label: "export only",
+            collapsibleState: vscode.TreeItemCollapsibleState.None,
+            command:{
+                command: "progen.exportOnly",
+                title: "exportOnly",
+                arguments: []
+            }
+        },
+        {
             label: "config",
             collapsibleState: vscode.TreeItemCollapsibleState.None,
             command:{
@@ -173,6 +193,7 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.makeCompiler', setCompiler));
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.run', run));
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.export', file_export));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('progen.exportOnly', file_export_only));
     context.subscriptions.push(vscode.commands.registerCommand('progen.config', moveToConfig));
 
     vscode.window.registerTreeDataProvider('progen', new TreeDataProvider());
@@ -207,16 +228,18 @@ $filepath = Split-Path -Parent $args[1]
 $filecontext = Get-Content -Raw -Encoding UTF8 -Path $args[1]
 
 cl.exe /EHsc "$($args[1])" /Fe"$filepath\\$filename" /Fo"$filepath\\$filename"
-& "$filepath\\$filename.exe" | Out-String | Tee-Object  -Variable output
 write-host;
 
 if($args[0] -eq "run"){
+    & "$filepath\\$filename.exe"
 }elseif ($args[0] -eq "export") {
+    & "$filepath\\$filename.exe" | Out-String | Tee-Object  -Variable output
     New-Item "$filepath/export" -Force -ItemType Directory > $null
     $context = "/*** $($args[2]) ***/\`n/*** $filename ***/\`n\`n$filecontext\`n\`n/*** 実行結果\`n\`n$output\`n\`n ***/"
     Write-Output $context | Out-File -FilePath "$filepath\\export\\$filenameext" -Encoding UTF8
 
 }elseif ($args[0] -eq "exportonly") {
+    & "$filepath\\$filename.exe"
     New-Item "$filepath/export" -Force -ItemType Directory > $null
     $context = "/*** $($args[2]) ***/\`n/*** $filename ***/\`n\`n$filecontext"
     Write-Output $context | Out-File -FilePath "$filepath\\export\\$filenameext" -Encoding UTF8

@@ -25,12 +25,15 @@ cl.exe /EHsc "$($args[1])" /Fe"$filepath\$filename" /Fo"$filepath\$filename"
 write-host;
 
 if($args[0] -eq "run"){
+    & "$filepath\\$filename.exe"
 }elseif ($args[0] -eq "export") {
+    & "$filepath\$filename.exe" | Out-String | Tee-Object  -Variable output
     New-Item "$filepath/export" -Force -ItemType Directory > $null
     $context = "/*** $($args[2]) ***/`n/*** $filename ***/`n`n$filecontext`n`n/*** 実行結果`n`n$output`n`n ***/"
     Write-Output $context | Out-File -FilePath "$filepath\export\$filenameext" -Encoding UTF8
 
 }elseif ($args[0] -eq "exportonly") {
+    & "$filepath\$filename.exe"
     New-Item "$filepath/export" -Force -ItemType Directory > $null
     $context = "/*** $($args[2]) ***/`n/*** $filename ***/`n`n$filecontext"
     Write-Output $context | Out-File -FilePath "$filepath\export\$filenameext" -Encoding UTF8
