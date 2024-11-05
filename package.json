@@ -1,6 +1,6 @@
 {
     "name": "progen-extension",
-    "version": "0.0.1",
+    "version": "0.1.1",
     "engines": {
         "vscode": "^1.33.1"
     },
@@ -14,6 +14,10 @@
     ],
     "contributes": {
         "commands": [
+            {
+                "command": "progen.makeCompiler",
+                "title": "Progen: make compiler"
+            },
             {
                 "command": "progen.run",
                 "title": "Progen: run"
