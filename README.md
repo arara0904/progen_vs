@@ -1,7 +1,7 @@
 # プロ言用VSCode拡張機能「プ」
 ベータ版
 ## 動作環境
-Windowsにのみ対応。Visual Studio 2022、PowerShell v5.1環境で動作確認済。
+Windowsにのみ対応。Visual Studio（cl.exeとvcvars32.bat）が入ってれば動くはず
 ## 機能
 ### run
 実行できます。ターミナルに実行結果が表示される。
